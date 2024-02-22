@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 )
 
@@ -18,7 +17,7 @@ type Location struct {
 	Lines     []Line      `json:"lines"`
 }
 
-func (a *Api) GetLocations(query string, results int, fuzzy bool, stops, linesOfStops bool, lang string, filters ...map[string]string) ([]Location, error) {
+func (a *Api) GetLocations(query string, results int, fuzzy, stops, linesOfStops bool, lang string) ([]Location, error) {
 	q := map[string]string{
 		"query":        query,
 		"results":      strconv.FormatInt(int64(results), 10),
@@ -27,11 +26,34 @@ func (a *Api) GetLocations(query string, results int, fuzzy bool, stops, linesOf
 		"addresses":    "false",
 		"poi":          "false",
 		"linesOfStops": strconv.FormatBool(linesOfStops),
-		"lang":         lang,
+		"language":     lang,
 	}
-	filters = append(filters, q)
-	fmt.Println(a.buildQuery("/locations", filters...))
-	res, err := a.get(a.buildQuery("/locations", filters...))
+	res, err := a.get(a.buildQuery("/locations", q))
+	if err != nil {
+		return []Location{}, err
+	}
+	defer res.Body.Close()
+	var locations []Location
+	err = json.NewDecoder(res.Body).Decode(&locations)
+	if err != nil {
+		return []Location{}, err
+	}
+	return locations, nil
+}
+
+func (a *Api) GetNearby(lat, long float64, results, distance int, stops, linesOfStops bool, language string) ([]Location, error) {
+	q := map[string]string{
+		"latitude":     strconv.FormatFloat(lat, 'f', -1, 64),
+		"longitude":    strconv.FormatFloat(long, 'f', -1, 64),
+		"results":      strconv.FormatInt(int64(results), 10),
+		"distance":     strconv.FormatInt(int64(distance), 10),
+		"stops":        strconv.FormatBool(stops),
+		"addresses":    "false",
+		"poi":          "false",
+		"linesOfStops": strconv.FormatBool(linesOfStops),
+		"language":     language,
+	}
+	res, err := a.get(a.buildQuery("/locations/nearby", q))
 	if err != nil {
 		return []Location{}, err
 	}
