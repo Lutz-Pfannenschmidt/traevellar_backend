@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Lutz-Pfannenschmidt/traevellar_backend/internal/api"
+	"github.com/Lutz-Pfannenschmidt/yagll"
 )
 
 const (
@@ -20,7 +21,7 @@ func main() {
 	}
 
 	for _, location := range locations {
-		println(location.Name)
+		yagll.Infof("Location: %s", location.Name)
 	}
 
 }
