@@ -6,15 +6,16 @@ import (
 )
 
 type Location struct {
-	Type      string      `json:"type"`
-	Latitude  float64     `json:"latitude"`
-	Longitude float64     `json:"longitude"`
-	ID        string      `json:"id"`
-	Name      string      `json:"name"`
-	Location  GeoLocation `json:"location"`
-	Products  Products    `json:"products"`
-	Station   Station     `json:"station"`
-	Lines     []Line      `json:"lines"`
+	Type      string        `json:"type"`
+	Latitude  float64       `json:"latitude"`
+	Longitude float64       `json:"longitude"`
+	ID        string        `json:"id"`
+	Name      string        `json:"name"`
+	Location  GeoLocation   `json:"location"`
+	Products  Products      `json:"products"`
+	Station   Station       `json:"station"`
+	Lines     []Line        `json:"lines"`
+	Entrances []GeoLocation `json:"entrances"`
 }
 
 func (a *Api) GetLocations(query string, results int, fuzzy, stops, linesOfStops bool, lang string) ([]Location, error) {
@@ -64,4 +65,22 @@ func (a *Api) GetNearby(lat, long float64, results, distance int, stops, linesOf
 		return []Location{}, err
 	}
 	return locations, nil
+}
+
+func (a *Api) GetLocationById(id string, linesOfStops bool, language string) (Location, error) {
+	q := map[string]string{
+		"linesOfStops": strconv.FormatBool(linesOfStops),
+		"language":     language,
+	}
+	res, err := a.get(a.buildQuery("/stops/"+id, q))
+	if err != nil {
+		return Location{}, err
+	}
+	defer res.Body.Close()
+	var location Location
+	err = json.NewDecoder(res.Body).Decode(&location)
+	if err != nil {
+		return Location{}, err
+	}
+	return location, nil
 }

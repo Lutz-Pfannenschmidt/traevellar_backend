@@ -21,7 +21,14 @@ func main() {
 	}
 
 	for _, location := range locations {
-		yagll.Infof("Location: %s", location.Name)
+		yagll.Infof("Location: %s %s", location.ID, location.Name)
 	}
+
+	byId, err := db.GetLocationById("906075", true, "en")
+	if err != nil {
+		panic(err)
+	}
+
+	yagll.Infof("Location by id: %s %s", byId.ID, byId.Name)
 
 }
