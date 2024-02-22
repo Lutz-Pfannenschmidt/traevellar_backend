@@ -1,6 +1,9 @@
 package main
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/Lutz-Pfannenschmidt/traevellar_backend/internal/api"
 	"github.com/Lutz-Pfannenschmidt/yagll"
 )
@@ -30,5 +33,23 @@ func main() {
 	}
 
 	yagll.Infof("Location by id: %s %s", byId.ID, byId.Name)
+
+	unixTime := time.Now().Unix()
+	_, err = db.GetDepartures("906075", strconv.FormatInt(unixTime, 10), 100, 99, true, true, api.Products{
+		NationalExpress: true,
+		National:        true,
+		RegionalExpress: true,
+		Regional:        true,
+		Suburban:        true,
+		Bus:             true,
+		Ferry:           true,
+		Subway:          true,
+		Tram:            true,
+		Taxi:            true,
+	})
+
+	if err != nil {
+		panic(err)
+	}
 
 }

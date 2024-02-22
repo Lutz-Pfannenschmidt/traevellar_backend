@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 )
 
@@ -86,4 +87,37 @@ func (a *Api) GetLocationById(id string, linesOfStops bool, language string) (Lo
 		return Location{}, err
 	}
 	return location, nil
+}
+
+func (a *Api) GetDepartures(id, when string, duration, results int, linesOfStops, remarks bool, config Products) ([]Departure, error) {
+	q := map[string]string{
+		"when":            when,
+		"duration":        strconv.FormatInt(int64(duration), 10),
+		"results":         strconv.FormatInt(int64(results), 10),
+		"linesOfStops":    strconv.FormatBool(linesOfStops),
+		"remarks":         strconv.FormatBool(remarks),
+		"nationalExpress": strconv.FormatBool(config.NationalExpress),
+		"national":        strconv.FormatBool(config.National),
+		"regionalExpress": strconv.FormatBool(config.RegionalExpress),
+		"regional":        strconv.FormatBool(config.Regional),
+		"suburban":        strconv.FormatBool(config.Suburban),
+		"bus":             strconv.FormatBool(config.Bus),
+		"ferry":           strconv.FormatBool(config.Ferry),
+		"subway":          strconv.FormatBool(config.Subway),
+		"tram":            strconv.FormatBool(config.Tram),
+		"taxi":            strconv.FormatBool(config.Taxi),
+		"pretty":          "false",
+	}
+	fmt.Println(a.buildQuery("/stops/"+id+"/departures", q))
+	res, err := a.get(a.buildQuery("/stops/"+id+"/departures", q))
+	if err != nil {
+		return []Departure{}, err
+	}
+	defer res.Body.Close()
+	var departures departureResponse
+	err = json.NewDecoder(res.Body).Decode(&departures)
+	if err != nil {
+		return []Departure{}, err
+	}
+	return departures.Departures, nil
 }
