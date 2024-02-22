@@ -28,6 +28,7 @@ func (a *Api) GetLocations(query string, results int, fuzzy, stops, linesOfStops
 		"poi":          "false",
 		"linesOfStops": strconv.FormatBool(linesOfStops),
 		"language":     lang,
+		"pretty":       "false",
 	}
 	res, err := a.get(a.buildQuery("/locations", q))
 	if err != nil {
@@ -53,6 +54,7 @@ func (a *Api) GetNearby(lat, long float64, results, distance int, stops, linesOf
 		"poi":          "false",
 		"linesOfStops": strconv.FormatBool(linesOfStops),
 		"language":     language,
+		"pretty":       "false",
 	}
 	res, err := a.get(a.buildQuery("/locations/nearby", q))
 	if err != nil {
@@ -71,6 +73,7 @@ func (a *Api) GetLocationById(id string, linesOfStops bool, language string) (Lo
 	q := map[string]string{
 		"linesOfStops": strconv.FormatBool(linesOfStops),
 		"language":     language,
+		"pretty":       "false",
 	}
 	res, err := a.get(a.buildQuery("/stops/"+id, q))
 	if err != nil {
