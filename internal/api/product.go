@@ -17,3 +17,24 @@ type Products struct {
 	Tram            bool `json:"tram"`
 	Taxi            bool `json:"taxi"`
 }
+
+var ALL_PRODUCTS = &Products{
+	NationalExpress: true,
+	National:        true,
+	RegionalExpress: true,
+	Regional:        true,
+	Suburban:        true,
+	Bus:             true,
+	Ferry:           true,
+	Subway:          true,
+	Tram:            true,
+	Taxi:            true,
+}
+
+var TRAIN_PRODUCTS = &Products{
+	NationalExpress: true,
+	National:        true,
+	RegionalExpress: true,
+	Regional:        true,
+	Suburban:        true,
+}
