@@ -22,7 +22,7 @@ type Departure struct {
 	Direction           string      `json:"direction"`
 	Provenance          any         `json:"provenance"`
 	Line                Line        `json:"line"`
-	Remarks             []any       `json:"remarks"`
+	Remarks             []Remark    `json:"remarks"`
 	Origin              any         `json:"origin"`
 	Destination         Location    `json:"destination"`
 	CurrentTripPosition GeoLocation `json:"currentTripPosition"`
